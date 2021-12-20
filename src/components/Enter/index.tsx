@@ -15,12 +15,13 @@ export default function Enter() {
     }
 
     return <div id="enter">
-        <h1>STRIVE TIC TAC</h1>
-
-        <Form onSubmit={handleSubmit}>
-            <Form.Control type="text" value={name} onChange={e => setName(e.target.value)} />
-            <Form.Control type="submit" disabled={!name} />
+        <div className="login">
+        <h1>Strive Tic Tac</h1>
+        
+        <Form className="pt-4" onSubmit={handleSubmit}>
+            <Form.Control className="mt-3" type="text" value={name} onChange={e => setName(e.target.value)} />
+            <Form.Control className="mt-5 btn-login" type="submit" disabled={!name} />
         </Form>
-
+        </div>
     </div>
 }
