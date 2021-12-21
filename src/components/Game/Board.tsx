@@ -1,12 +1,17 @@
 import { useState } from "react"
 import { io } from "socket.io-client"
 import { useEffect } from "react"
-import { useSetRecoilState } from "recoil"
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil"
 import { toastState } from "atoms/toastState"
+import { nameState } from "atoms/nameState"
+import { socketClient } from "App"
+import { Symbol } from "types"
+import { symbolState } from "atoms/symbolState"
 
-const socketClient = io(process.env.REACT_APP_BACKEND_URL!, { transports: ['websocket'] })
-
-type Symbol = "O" | "X" | null
+interface Opponent {
+    name: string
+    socketId: string
+}
 
 export default function Board() {
 
@@ -19,24 +24,52 @@ export default function Board() {
         [null, null, null],
     ])
 
+    const name = useRecoilValue(nameState)
+
     const setToast = useSetRecoilState(toastState)
 
-    const symbol: Symbol = "X"
+    const [opponent, setOpponent] = useState<Opponent | null>(null)
+
+    const [symbol, setSymbol] = useRecoilState(symbolState)
 
     const handleMatrixUpdate = (x: number, y: number) => {
-        //socket.emit("updateMatrix", {x,y, gameId})
-        setMatrix(matrix => {
-            matrix[y][x] = symbol
-            return [...matrix]
-        })
+        const newMatrix = [...matrix]
+        newMatrix[y][x] = symbol
+        setMatrix(newMatrix)
+
+        socketClient.emit("matrixUpdate", { matrix: newMatrix, opponent })
     }
 
     useEffect(() => {
+
+        socketClient.on("connect", () => {
+            console.log("connected...")
+            console.log(name)
+            socketClient.emit("loggedIn", { name, symbol })
+        })
+
+        // socketClient.on("hello", () => { console.log("hello world") })
+
         socketClient.on("waitingForOpponent", () => {
             setToast({
                 message: "Waiting for another player...",
                 display: true
             })
+        })
+
+        socketClient.on("gameStarted", ({ name, socketId, symbol }) => {
+            setSymbol(symbol)
+            setOpponent({ name, socketId })
+
+            if (symbol === "X") {
+                setToast({
+                    message: "Waiting for your opponent move...",
+                    display: true
+                })
+            } else {
+                setToast(t => ({ ...t, display: false }))
+            }
+
         })
 
         socketClient.on("waitingForMove", () => {
@@ -46,11 +79,13 @@ export default function Board() {
             })
         })
 
-        socketClient.on("yourTurn", () => {
+        socketClient.on("yourTurn", ({ matrix }) => {
             setToast(t => ({
                 ...t,
                 display: false
             }))
+
+            setMatrix(matrix)
         })
 
         socketClient.on("matrixUpdated", (matrix) => {
@@ -67,18 +102,27 @@ export default function Board() {
             //setGameId(gameId)
         })
 
-        socketClient.on("gameOver", ({ won }: { won: Symbol }) => {
-            const message =
-                won
-                    ? won === symbol ? "You won" : "You lost"
-                    : "Draw"
+    }, [setToast])
+
+    useEffect(() => {
+        const gameOver = ({ winner, matrix }: { winner: Symbol, matrix: [Symbol, Symbol, Symbol][] }) => {
+            const won = winner === symbol
+
+            console.log({ won, winner, symbol })
+
+            setMatrix(matrix)
 
             setToast({
-                message,
+                message: won ? "You won!" : "You lost!",
                 display: true
             })
-        })
-    }, [setToast])
+        }
+        socketClient.on("gameOver", gameOver)
+
+        return () => { socketClient.off("gameOver", gameOver) }
+    }, [symbol])
+
+    console.log({ symbol })
 
     return <div id="board">
         {

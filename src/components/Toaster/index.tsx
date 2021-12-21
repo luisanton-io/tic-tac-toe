@@ -1,3 +1,4 @@
+import { socketClient } from "App"
 import { Button } from "react-bootstrap"
 import { useNavigate } from "react-router-dom"
 import { useRecoilState } from "recoil"
@@ -20,6 +21,7 @@ export default function Toaster() {
     const goToHome = () => {
         navigate("/")
         setToast(toast => ({ ...toast, display: false }))
+        socketClient.emit("leave")
     }
     return toast.display
         ? <div className="overlay">

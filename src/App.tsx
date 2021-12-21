@@ -5,6 +5,12 @@ import 'styles/App.scss';
 import { routes } from 'routes';
 import { RecoilRoot } from 'recoil';
 import Toaster from 'components/Toaster';
+import { io } from 'socket.io-client';
+
+export const socketClient = io(process.env.REACT_APP_BACKEND_URL!, {
+  transports: ['websocket'],
+  // withCredentials: true
+})
 
 function App() {
   return (
