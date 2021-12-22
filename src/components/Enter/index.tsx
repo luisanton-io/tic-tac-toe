@@ -58,7 +58,7 @@ export default function Enter() {
                     </label>
                 </div>
 
-                <Button className="mt-5 btn-login px-5 py-3" type="submit" disabled={!name}>
+                <Button className="mt-5 btn-login px-5 py-3" type="submit" disabled={!name || !symbol}>
                     Play
                 </Button>
             </Form>
