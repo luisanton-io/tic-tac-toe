@@ -40,8 +40,9 @@ export default function Board() {
         newMatrix[y][x] = symbol
         setMatrix(newMatrix)
 
-        console.log({ opponent })
+        // console.log({ opponent })
         if (!opponent) {
+            // should never happen
             throw new Error("OPPONENT CAN'T BE NULL")
         }
 

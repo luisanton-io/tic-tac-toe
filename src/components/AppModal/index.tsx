@@ -16,11 +16,11 @@ export default function AppModal() {
     }
 
     const symbol = useRecoilValue(symbolState)
-    console.log({ symbol })
+    // console.log({ symbol })
 
 
     return modal.display
-        ? <div className="overlay">
+        ? <div id="app-modal">
             <h2>{modal.message}</h2>
 
             <Button variant="primary" onClick={goToHome}>Go back</Button>

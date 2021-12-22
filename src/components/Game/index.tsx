@@ -7,7 +7,7 @@ import Board from "./Board"
 
 
 export default function Game() {
-    const name = useRecoilValue(nameState)
+
     const [game, setGameState] = useRecoilState(gameState)
 
     useEffect(() => {
