@@ -1,11 +1,13 @@
-import { useState } from "react";
-import { Form, FormControl, InputGroup } from "react-bootstrap";
+import { useEffect, useState } from "react";
+import { Button, Form, FormControl, InputGroup } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import { nameState } from "atoms/nameState";
 import { symbolState } from "atoms/symbolState";
 import { socketClient } from "App";
 import { Symbol } from "types";
+import { gameState } from "atoms/gameState";
+import { modalState } from "atoms/modalState";
 
 export default function Enter() {
 
@@ -13,7 +15,6 @@ export default function Enter() {
     const [symbol, setSymbol] = useRecoilState(symbolState);
 
     const navigate = useNavigate()
-
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -23,20 +24,43 @@ export default function Enter() {
         }
     }
 
+    const [game, setGameState] = useRecoilState(gameState);
+
+    const setModal = useSetRecoilState(modalState)
+
+    useEffect(() => {
+        if (game === "PLAYING") {
+            setGameState("ENTERING")
+            setModal(modal => ({ ...modal, display: false }))
+            socketClient.emit("leave")
+        }
+    }, [game])
+
     return <div id="enter">
         <div className="login">
-            <h1>Strive Tic Tac</h1>
+            <h1>Strive <br /> Tic Tac</h1>
 
             <Form className="pt-4" onSubmit={handleSubmit}>
                 <Form.Control className="mt-3" type="text" value={name} onChange={e => setName(e.target.value)} />
 
 
-                <input type="radio" name="symbol" value="O" onChange={e => setSymbol(e.target.value as Symbol)} id="radio-O" />
-                <label htmlFor="radio-O">O</label>
-                <input type="radio" name="symbol" value="X" onChange={e => setSymbol(e.target.value as Symbol)} id="radio-X" />
-                <label htmlFor="radio-X">X</label>
+                <div className="symbols">
+                    <input type="radio" name="symbol" value="O" checked={symbol === "O"}
+                        onChange={e => setSymbol(e.target.value as Symbol)} id="radio-O" />
+                    <label htmlFor="radio-O">
+                        <img data-symbol="O" src="/assets/O.png" alt="" />
+                    </label>
 
-                <Form.Control className="mt-5 btn-login" type="submit" disabled={!name} />
+                    <input type="radio" name="symbol" value="X" checked={symbol === "X"}
+                        onChange={e => setSymbol(e.target.value as Symbol)} id="radio-X" />
+                    <label htmlFor="radio-X">
+                        <img data-symbol="X" src="/assets/X.png" alt="" />
+                    </label>
+                </div>
+
+                <Button className="mt-5 btn-login px-5 py-3" type="submit" disabled={!name}>
+                    Play
+                </Button>
             </Form>
         </div>
     </div>

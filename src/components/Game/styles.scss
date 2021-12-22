@@ -1,13 +1,53 @@
+@import "styles/colors.scss";
+@import "styles/symbol-img.scss";
+
 #game {
+    height: 100vh;
+    background: $secondary;
+    display: flex;
+    flex-direction: column;
+
+    header {
+        padding-top: 2em;
+        display: flex;
+        justify-content: space-between;
+        margin: 0px 4ch;
+        h4 {
+            color: $primary;
+        }
+    }
     #board {
+        margin: auto;
         .board-row {
             display: flex;
             .board-cell {
-                width: 150px;
-                height: 150px;
+                width: 30vmin;
+                height: 30vmin;
                 cursor: pointer;
-                border: 4px solid black;
+                border: 4px solid white;
                 font-size: 5em;
+                display: grid;
+                place-items: center;
+                &:nth-of-type(1) {
+                    border-top: none;
+                    border-left: none;
+                }
+                &:nth-of-type(2) {
+                    border-top: none;
+                }
+                &:nth-of-type(3) {
+                    border-top: none;
+                    border-right: none;
+                }
+                img {
+                    @extend .symbol-img;
+                }
+            }
+
+            &:last-of-type {
+                .board-cell {
+                    border-bottom: none;
+                }
             }
         }
     }

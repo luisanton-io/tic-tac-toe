@@ -1,12 +1,19 @@
 @import "components/Enter/styles.scss";
 @import "components/Game/styles.scss";
 @import "animations.scss";
+@import "futura.scss";
 
-.alert.toast-message {
-    position: fixed;
-    bottom: 3em;
-    left: 15vw;
-    width: 70vw;
+body {
+    @extend .font-futura;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-weight: 700;
 }
 
 .overlay {
@@ -17,10 +24,23 @@
     height: 100%;
     background-color: rgba(0, 0, 0, 0.5);
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     h2 {
         color: white;
-        font-size: 3em;
+        font-size: 2.25em;
+        margin: auto;
+        text-align: center;
+        position: relative;
+        top: 1em;
+    }
+
+    button {
+        margin-bottom: 2em;
+        padding: 0.25em 1em;
+        font-size: 2em;
+        background-color: $primary;
+        color: $secondary;
     }
 }

@@ -2,7 +2,7 @@ import { useState } from "react"
 import { io } from "socket.io-client"
 import { useEffect } from "react"
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil"
-import { toastState } from "atoms/toastState"
+import { modalState } from "atoms/modalState"
 import { nameState } from "atoms/nameState"
 import { socketClient } from "App"
 import { Symbol } from "types"
@@ -26,16 +26,24 @@ export default function Board() {
 
     const name = useRecoilValue(nameState)
 
-    const setToast = useSetRecoilState(toastState)
+    const setModal = useSetRecoilState(modalState)
 
     const [opponent, setOpponent] = useState<Opponent | null>(null)
 
     const [symbol, setSymbol] = useRecoilState(symbolState)
 
     const handleMatrixUpdate = (x: number, y: number) => {
+
+        if (!!matrix[y][x]) return
+
         const newMatrix = [...matrix]
         newMatrix[y][x] = symbol
         setMatrix(newMatrix)
+
+        console.log({ opponent })
+        if (!opponent) {
+            throw new Error("OPPONENT CAN'T BE NULL")
+        }
 
         socketClient.emit("matrixUpdate", { matrix: newMatrix, opponent })
     }
@@ -48,39 +56,37 @@ export default function Board() {
             socketClient.emit("loggedIn", { name, symbol })
         })
 
-        // socketClient.on("hello", () => { console.log("hello world") })
-
         socketClient.on("waitingForOpponent", () => {
-            setToast({
+            setModal({
                 message: "Waiting for another player...",
                 display: true
             })
         })
 
-        socketClient.on("gameStarted", ({ name, socketId, symbol }) => {
+        socketClient.on("gameStarted", ({ opponent, symbol }) => {
             setSymbol(symbol)
-            setOpponent({ name, socketId })
+            setOpponent(opponent)
 
             if (symbol === "X") {
-                setToast({
+                setModal({
                     message: "Waiting for your opponent move...",
                     display: true
                 })
             } else {
-                setToast(t => ({ ...t, display: false }))
+                setModal(t => ({ ...t, display: false }))
             }
 
         })
 
         socketClient.on("waitingForMove", () => {
-            setToast({
+            setModal({
                 message: "Waiting for your opponent...",
                 display: true
             })
         })
 
         socketClient.on("yourTurn", ({ matrix }) => {
-            setToast(t => ({
+            setModal(t => ({
                 ...t,
                 display: false
             }))
@@ -88,21 +94,7 @@ export default function Board() {
             setMatrix(matrix)
         })
 
-        socketClient.on("matrixUpdated", (matrix) => {
-            setMatrix(matrix)
-        })
-
-        socketClient.on("newGame", ({ symbol, gameId }) => {
-            setMatrix([
-                [null, null, null],
-                [null, null, null],
-                [null, null, null],
-            ])
-            //setSymbol(symbol)
-            //setGameId(gameId)
-        })
-
-    }, [setToast])
+    }, [setModal])
 
     useEffect(() => {
         const gameOver = ({ winner, matrix }: { winner: Symbol, matrix: [Symbol, Symbol, Symbol][] }) => {
@@ -112,7 +104,7 @@ export default function Board() {
 
             setMatrix(matrix)
 
-            setToast({
+            setModal({
                 message: won ? "You won!" : "You lost!",
                 display: true
             })
@@ -122,22 +114,28 @@ export default function Board() {
         return () => { socketClient.off("gameOver", gameOver) }
     }, [symbol])
 
-    console.log({ symbol })
 
-    return <div id="board">
-        {
-            matrix.map((row, y) =>
-                <div className="board-row" key={`row_${y}`}>
-                    {
-                        row.map((symbol, x) =>
-                            <div className="board-cell" key={`cell_${x}`} onClick={() => handleMatrixUpdate(x, y)}>
-                                {symbol}
-                            </div>
-                        )
-                    }
-                </div>
-            )
-        }
-    </div>
+    return <>
+        <header>
+            <h4>{name}</h4>
+
+            <h4>{opponent?.name}</h4>
+        </header>
+        <div id="board">
+            {
+                matrix.map((row, y) =>
+                    <div className="board-row" key={`row_${y}`}>
+                        {
+                            row.map((symbol, x) =>
+                                <div className="board-cell" key={`cell_${x}`} onClick={() => handleMatrixUpdate(x, y)}>
+                                    {symbol && <img src={`/assets/${symbol}.png`} data-symbol={symbol} />}
+                                </div>
+                            )
+                        }
+                    </div>
+                )
+            }
+        </div>
+    </>
 }
 

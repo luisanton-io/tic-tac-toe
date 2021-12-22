@@ -1,35 +1,22 @@
-import { Button } from "react-bootstrap"
-import { useRecoilValue, useSetRecoilState } from "recoil"
+import { gameState } from "atoms/gameState"
+import { useEffect } from "react"
+import { useRecoilState, useRecoilValue } from "recoil"
 import { nameState } from "../../atoms/nameState"
-import { toastState } from "../../atoms/toastState"
-import { gameState } from "../../atoms/gameState"
-
 import Board from "./Board"
+
 
 
 export default function Game() {
     const name = useRecoilValue(nameState)
+    const [game, setGameState] = useRecoilState(gameState)
 
-    const setToast = useSetRecoilState(toastState)
-
-    const game = useRecoilValue(gameState)
-
-    const handleDisplayToast = () => {
-        setToast({
-            message: "Waiting for your opponent...",
-            display: true
-        })
-    }
-
-
-
+    useEffect(() => {
+        game === "ENTERING" && setGameState("PLAYING")
+    }, [game])
 
     return <div id="game">
-        Hello {name}
 
         <Board />
-
-        <Button onClick={handleDisplayToast}> Display toast!</Button>
 
     </div >
 }

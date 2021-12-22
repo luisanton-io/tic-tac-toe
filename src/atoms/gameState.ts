@@ -1,7 +1,6 @@
-import { GameMessages } from "constants/gameMessages";
-import { atom } from "recoil";
+import { atom } from "recoil"
 
-export const gameState = atom<keyof typeof GameMessages>({
+export const gameState = atom<"PLAYING" | "ENTERING">({
     key: "gameState",
-    default: "loggedOut"
+    default: "PLAYING"
 })

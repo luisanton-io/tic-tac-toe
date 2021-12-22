@@ -1,7 +1,7 @@
 import { atom } from "recoil";
 
-export const toastState = atom<Toast>({
-    key: "toastState",
+export const modalState = atom<AppModal>({
+    key: "modalState",
     default: {
         message: "",
         display: false

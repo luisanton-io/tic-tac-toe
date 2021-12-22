@@ -1,4 +1,4 @@
-type Toast = {
+type AppModal = {
     message: string;
     display: boolean;
 }

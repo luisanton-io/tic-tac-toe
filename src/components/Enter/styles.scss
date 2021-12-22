@@ -1,38 +1,82 @@
 @import "styles/colors.scss";
+@import "styles/symbol-img.scss";
 
 #enter {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
-  background: #101010;
-  color: #fff;
-  h1 {
-      color: $secondary;
-  }
-
-  .login {
-    background: $primary;
-    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-    backdrop-filter: blur(0px);
-    -webkit-backdrop-filter: blur(0px);
-    border-radius: 10px;
-    border: 1px solid rgba(255, 255, 255, 0.18);
-    min-width: 300px;
-    max-width: 300px;
-    height: 350px;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    flex-direction: column;
+    height: 100vh;
+    background: #101010;
     color: #fff;
-
-    .btn-login {
-      width: 100px;
-      height: 40px;
-      background: $secondary;
-      color: #fff;
+    h1 {
+        color: $secondary;
+        font-style: italic;
+        font-size: 3em;
     }
-  }
+
+    .login {
+        background: $primary;
+        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        backdrop-filter: blur(0px);
+        -webkit-backdrop-filter: blur(0px);
+        border-radius: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        min-width: 300px;
+        max-width: 300px;
+        // height: 350px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        color: #fff;
+        padding: 2em 0px;
+
+        .btn-login {
+            background: $secondary;
+            color: #fff;
+            margin: 0px auto;
+            font-size: 1.55em;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            input[type="text"] {
+                font-size: 1.5em;
+                width: 70%;
+                margin: 0px auto;
+            }
+        }
+
+        .symbols {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 2em;
+
+            input[type="radio"] {
+                width: 0px;
+                height: 0px;
+                & ~ label {
+                    font-size: 2em;
+                    color: $secondary;
+                    padding: 0.25em 0.5ch;
+                    margin: 0px auto;
+                    width: 20vw;
+                    height: 20vw;
+                    border-radius: 8px;
+                    display: grid;
+                    place-items: center;
+                    img {
+                        @extend .symbol-img;
+                        filter: invert(1) saturate(0);
+                    }
+                }
+
+                &:checked + label {
+                    border: 1px solid $secondary;
+                }
+            }
+        }
+    }
 }

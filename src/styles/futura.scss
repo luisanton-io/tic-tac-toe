@@ -1,0 +1,52 @@
+@font-face {
+    font-family: "__Futura";
+    src: url("../../public/assets/fonts/Futura-Lig.otf");
+    font-weight: 300;
+}
+
+@font-face {
+    font-family: "__Futura";
+    src: url("../../public/assets/fonts/Futura-Med.otf");
+    font-weight: 400;
+}
+@font-face {
+    font-family: "__Futura";
+    src: url("../../public/assets/fonts/Futura-MedObl.otf");
+    font-weight: 400;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: "__Futura";
+    src: url("../../public/assets/fonts/Futura-Bol.otf");
+    font-weight: 700;
+}
+
+@font-face {
+    font-family: "__Futura";
+    src: url("../../public/assets/fonts/Futura-BolObl.otf");
+    font-weight: 700;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: "__Futura";
+    src: url("../../public/assets/fonts/Futura-ExtBol.otf");
+    font-weight: 900;
+    font-style: italic;
+}
+
+.font-futura {
+    font-family: "__Futura", sans-serif;
+    &.bold {
+        font-weight: 700;
+    }
+
+    &.extra-bold {
+        font-weight: 900;
+    }
+
+    &.italic {
+        font-style: italic;
+    }
+}

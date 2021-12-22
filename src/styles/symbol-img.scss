@@ -1,0 +1,9 @@
+.symbol-img {
+    width: 80%;
+    height: 80%;
+    object-fit: cover;
+    &[data-symbol="X"] {
+        width: 65%;
+        height: 65%;
+    }
+}
