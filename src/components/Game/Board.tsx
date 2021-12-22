@@ -98,14 +98,13 @@ export default function Board() {
 
     useEffect(() => {
         const gameOver = ({ winner, matrix }: { winner: Symbol, matrix: [Symbol, Symbol, Symbol][] }) => {
+            const draw = winner === null
             const won = winner === symbol
-
-            console.log({ won, winner, symbol })
 
             setMatrix(matrix)
 
             setModal({
-                message: won ? "You won!" : "You lost!",
+                message: draw ? "Draw!" : won ? "You won!" : "You lost!",
                 display: true
             })
         }
